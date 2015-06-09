@@ -13,16 +13,32 @@ ToExpression[Map[
 
 
 (* I/O functions *)
-normalizePixel[max_][pix_]:=N[If[Length[pix]<3,First[pix],Total[Take[pix,3]]/3]/max];
+normalizePixel[max_][pix_] := N[If[Length[pix]<3,First[pix],Total[Take[pix,3]]/3]/max];
 
-readInputFile[path_]:=If[StringMatchQ[path,"*.csv",IgnoreCase->True],
+readInputFile[path_] := If[StringMatchQ[path,"*.csv",IgnoreCase->True],
   Import[path,"CSV"],
   Map[Function[row,Map[normalizePixel[255],row]],Import[path,"Data"]]];
 
 
 (* read the input files *)
-noisyMrImage:=readInputFile[inputfilename];
-snr:=readInputFile[inputfilenamesnr];
+noisyMrImage := readInputFile[inputfilename];
+snr := readInputFile[inputfilenamesnr];
+
+
+filterPadded[h_,I_] := Module[{rotatedH,paddedI,hRadH,hRadW},
+  rotatedH = Reverse[h, {1, 2}]; (* 180\[Degree] rotation needed for conv2 to behave like filter2 *)
+  {hRadH,hRadW} = Floor[(Dimensions[rotatedH]-1)/2];
+  paddedI = ArrayPad[I,{{hRadH},{hRadW}},"Fixed"];
+  ListConvolve[rotatedH,paddedI]
+]
+
+
+(* EM implementation of Maximum Likelihood for Rician data *)
+emmlRice[in_,n_,windowSize_]:=Module[{windowRadius,mask},
+  windowRadius = Floor[(windowSize-1)/2];
+  mask = BoxMatrix[windowRadius] / (windowRadius*2+1)^2;
+  mask
+]
 
 
 EndPackage[]
