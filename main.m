@@ -32,15 +32,15 @@ filterPadded[h_,I_] := Module[{rotatedH,paddedI,hRadH,hRadW},
 
 
 (* APROXIMATION of BESSELI. Avoids problems *)
-approxi1i0[z_] := Module[{cont,z8,Mn,Md,M,useBesseliAtAll,elz},
-  cont = Map[If[#<1.5,1,0]&,z,{2}];
-  z8 = N[8*Map[If[#==0,WHATEVER,#]&,z,{2}]];
+approxi1i0[zz_] := Module[{cont,z8,Mn,Md,M,useBesseliAtAll,elz},
+  cont = Map[If[#<1.5,1,0]&,zz,{2}];
+  z8 = N[8*Map[If[#==0,WHATEVER,#]&,zz,{2}]];
   Mn = 1 - 3/z8 - 15/2/z8^2 - (3*5*21)/6/z8^3;
   Md = 1 + 1/z8 +  9/2/z8^2 +   (25*9)/6/z8^3;
   M = Mn/Md;
-  useBesseliAtAll=Count[Total[cont,{1}],x_/;x>1]==Dimensions[z][[2]];
+  useBesseliAtAll=Count[Total[cont,{1}],x_/;x>1]==Dimensions[zz][[2]];
   MapIndexed[Function[{elM,idx},
-    elz=z[[ Part[idx,1],Part[idx,2] ]];
+    elz=zz[[ Part[idx,1],Part[idx,2] ]];
     If[elz==0, 0,
       If[useBesseliAtAll && elz<1.5,N[BesselI[1,elz]/BesselI[0,elz]],elM]
     ]
