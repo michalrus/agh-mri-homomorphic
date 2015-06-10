@@ -36,7 +36,7 @@ filterPadded[h_,I_] := Module[{rotatedH,paddedI,hRadH,hRadW},
 (* APROXIMATION of BESSELI. Avoids problems *)
 approxi1i0[z_] := Module[{cont,z8,Mn,Md,M,useBesseliAtAll,elz},
   cont = Map[If[#<1.5,1,0]&,z,{2}];
-  z8 = N[8*z];
+  z8 = N[8*Map[If[#==0,WHATEVER,#]&,z,{2}]];
   Mn = 1 - 3/z8 - 15/2/z8^2 - (3*5*21)/6/z8^3;
   Md = 1 + 1/z8 +  9/2/z8^2 +   (25*9)/6/z8^3;
   M = Mn/Md;
@@ -56,7 +56,12 @@ emmlRice[in_,n_,windowSize_]:=Module[{windowRadius,mask,ak,sigmak2},
   mask = BoxMatrix[windowRadius] / (windowRadius*2+1)^2;
   ak = Sqrt[Sqrt[N[Map[Max[#,0]&,2*filterPadded[mask,in^2]^2 - filterPadded[mask,in^4],{2}]]]];
   sigmak2 = 0.5*Map[Max[#,0.01]&,filterPadded[mask,in^2]-ak^2,{2}];
-  sigmak2
+  Do[
+    ak = Map[Max[#,0]&,filterPadded[mask,approxi1i0[ak*in/sigmak2]*in],{2}];
+    sigmak2 = Map[Max[#,0.01]&,0.5*filterPadded[mask,Abs[in]^2]-ak^2/2,{2}],
+    {i,n}
+  ];
+  {ak,Sqrt[sigmak2]}
 ]
 
 
