@@ -10,10 +10,10 @@
 NotebookFileLineBreakTest
 NotebookFileLineBreakTest
 NotebookDataPosition[       158,          7]
-NotebookDataLength[      1099,         42]
-NotebookOptionsPosition[       869,         29]
-NotebookOutlinePosition[      1204,         44]
-CellTagsIndexPosition[      1161,         41]
+NotebookDataLength[      1490,         54]
+NotebookOptionsPosition[      1224,         40]
+NotebookOutlinePosition[      1559,         55]
+CellTagsIndexPosition[      1516,         52]
 WindowFrame->Normal*)
 
 (* Beginning of Notebook Content *)
@@ -25,7 +25,18 @@ Cell[BoxData[{
    "]"}], ";"}], "\[IndentingNewLine]", 
  RowBox[{"<<", "main.m"}]}], "Input",
  CellChangeTimes->{{3.6428580635890007`*^9, 3.642858064963228*^9}, {
-  3.642858189651946*^9, 3.642858229470428*^9}}]
+  3.642858189651946*^9, 3.642858229470428*^9}}],
+
+Cell[BoxData[
+ RowBox[{"{", 
+  RowBox[{
+   RowBox[{"Image", "[", 
+    RowBox[{"MRI`mapag", "/", 
+     RowBox[{"Max", "[", "MRI`mapag", "]"}]}], "]"}], ",", 
+   RowBox[{"Image", "[", 
+    RowBox[{"MRI`mapar", "/", 
+     RowBox[{"Max", "[", "MRI`mapar", "]"}]}], "]"}]}], "}"}]], "Input",
+ CellChangeTimes->{{3.642960434165563*^9, 3.642960435754788*^9}}]
 },
 WindowSize->{678, 203},
 WindowMargins->{{Automatic, 203}, {Automatic, 40}},
@@ -43,7 +54,8 @@ CellTagsIndex->{}
 *)
 (*NotebookFileOutline
 Notebook[{
-Cell[558, 20, 307, 7, 55, "Input"]
+Cell[558, 20, 307, 7, 55, "Input"],
+Cell[868, 29, 352, 9, 55, "Input"]
 }
 ]
 *)
