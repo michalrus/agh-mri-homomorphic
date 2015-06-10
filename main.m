@@ -19,6 +19,9 @@ readInputFile[path_] := If[StringMatchQ[path,"*.csv",IgnoreCase->True],
   Import[path,"CSV"],
   Map[Function[row,Map[normalizePixel[255],row]],Import[path,"Data"]]];
 
+writeOutputFile[path_,data_] := If[StringMatchQ[path,"*.csv",IgnoreCase->True],
+  Export[path,data],Export[path,Image[data/Max[data]]]];
+
 
 filterPadded[h_,I_] := Module[{rotatedH,paddedI,hRadH,hRadW},
   rotatedH = Reverse[h, {1, 2}]; (* 180\[Degree] rotation needed for conv2 to behave like filter2 *)
@@ -119,6 +122,14 @@ lpf1 = lpf2-fc1;
 lpf1 = lpf[lpf1,lpffRice];
 mapa1 = Exp[lpf1];
 mapar = mapa1 * (2 / Sqrt[2] * Exp[-PolyGamma[1]/2]);
+
+
+(* export *)
+writeOutputFile[outputfilenameGaussian,mapag];
+writeOutputFile[outputfilenameRician,  mapar];
+
+
+(* errors when compared to MATLAB impl. ~= 10\.af\.b9\.b9 \[Divide] 10\.af\.b9\.b2 *)
 
 
 EndPackage[]
