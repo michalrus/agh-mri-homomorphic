@@ -20,11 +20,6 @@ readInputFile[path_] := If[StringMatchQ[path,"*.csv",IgnoreCase->True],
   Map[Function[row,Map[normalizePixel[255],row]],Import[path,"Data"]]];
 
 
-(* read the input files *)
-noisyMrImage := readInputFile[inputfilename];
-snr := readInputFile[inputfilenamesnr];
-
-
 filterPadded[h_,I_] := Module[{rotatedH,paddedI,hRadH,hRadW},
   rotatedH = Reverse[h, {1, 2}]; (* 180\[Degree] rotation needed for conv2 to behave like filter2 *)
   {hRadH,hRadW} = Floor[(Dimensions[rotatedH]-1)/2];
@@ -65,6 +60,16 @@ emmlRice[in_,n_,windowSize_]:=Module[{windowRadius,mask,ak,sigmak2},
 ]
 
 
+(* Gaussian matrix (Mathematica's GaussianMatrix[] seems to be incorrect? *)
+meshgrid[xgrid_List,ygrid_List] := Transpose[Outer[List,xgrid,ygrid],{3,2,1}]
+
+gaussianMatrix[w_,h_,sigma_]:=Module[{h1,h2,hg},
+  {h1,h2}=N[meshgrid[Range[-(w-1)/2,(w-1)/2,1],Range[-(h-1)/2,(h-1)/2,1]]];
+  hg= Exp[-(h1^2+h2^2)/(2*sigma^2)];
+  hg/Total[hg,2]
+]
+
+
 (* LPF low pass filter of images *)
 lpf[i_,sigma_]:=Module[{Mx,My,h},
   {Mx,My} = Dimensions[i];
@@ -73,6 +78,17 @@ lpf[i_,sigma_]:=Module[{Mx,My,h},
   h = h[[Mx+1;;2*Mx,My+1;;2*My]];
   FourierDCT[FourierDCT[i]*h,3]
 ]
+
+
+noisyMrImage = readInputFile[inputfilename];
+{m2,sigman} = emmlRice[noisyMrImage,exiterations,3];
+sigman2 = lpf[sigman,lpffSNR];
+exWindowRadius = Floor[(exwindowsize-1)/2];
+m1 = filterPadded[BoxMatrix[exWindowRadius]/(exWindowRadius*2+1)^2,noisyMrImage];
+snr = If[StringLength[inputfilenamesnr]==0,m2/sigman,readInputFile[inputfilenamesnr]];
+rn = Abs[noisyMrImage-m1];
+lrn = Log[Map[If[#==0,0.001,#]&,rn,{2}]];
+lpf2 =lpf[lrn,lpff];
 
 
 EndPackage[]
