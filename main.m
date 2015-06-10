@@ -29,15 +29,16 @@ filterPadded[h_,I_] := Module[{rotatedH,paddedI,hRadH,hRadW},
   rotatedH = Reverse[h, {1, 2}]; (* 180\[Degree] rotation needed for conv2 to behave like filter2 *)
   {hRadH,hRadW} = Floor[(Dimensions[rotatedH]-1)/2];
   paddedI = ArrayPad[I,{{hRadH},{hRadW}},"Fixed"];
-  ListConvolve[rotatedH,paddedI]
+  ListConvolve[N[rotatedH],N[paddedI]]
 ]
 
 
 (* EM implementation of Maximum Likelihood for Rician data *)
-emmlRice[in_,n_,windowSize_]:=Module[{windowRadius,mask},
+emmlRice[in_,n_,windowSize_]:=Module[{windowRadius,mask,ak},
   windowRadius = Floor[(windowSize-1)/2];
   mask = BoxMatrix[windowRadius] / (windowRadius*2+1)^2;
-  mask
+  ak = Sqrt[Sqrt[N[Map[Max[#,0]&,2*filterPadded[mask,in^2]^2 - filterPadded[mask,in^4],{2}]]]];
+  ak
 ]
 
 
