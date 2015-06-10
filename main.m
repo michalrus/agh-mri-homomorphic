@@ -80,17 +80,45 @@ lpf[i_,sigma_]:=Module[{Mx,My,h},
 ]
 
 
+(* Rician-Gaussian correction for noise estimation *)
+coefs = {-0.289549906258443,   -0.0388922575606330,   0.409867108141953,
+         -0.355237628488567,    0.149328280945610,   -0.0357861117942093,
+          0.00497952893859122, -0.000374756374477592, 1.18020229140092*^-5};
+correctRiceGauss[a1_]:=Module[{fc},
+  fc = coefs[[1]]      + coefs[[2]]*a1   + coefs[[3]]*a1^2
+     + coefs[[4]]*a1^3 + coefs[[5]]*a1^4 + coefs[[6]]*a1^5
+     + coefs[[7]]*a1^6 + coefs[[8]]*a1^7 + coefs[[9]]*a1^8;
+  fc * Map[If[#<=7,1,0]&,a1,{2}]
+]
+
+
+(* Prior values *)
 noisyMrImage = readInputFile[inputfilename];
 {m2,sigman} = emmlRice[noisyMrImage,exiterations,3];
 sigman2 = lpf[sigman,lpffSNR];
 exWindowRadius = Floor[(exwindowsize-1)/2];
 m1 = filterPadded[BoxMatrix[exWindowRadius]/(exWindowRadius*2+1)^2,noisyMrImage];
 snr = If[StringLength[inputfilenamesnr]==0,m2/sigman,readInputFile[inputfilenamesnr]];
+
+
+(* Gauss *)
 rn = Abs[noisyMrImage-m1];
 lrn = Log[Map[If[#==0,0.001,#]&,rn,{2}]];
 lpf2 = lpf[lrn,lpff];
 mapa2 = Exp[lpf2];
 mapag = mapa2 * (2 / Sqrt[2] * Exp[-PolyGamma[1]/2]);
+
+
+(* Rician *)
+localMean = If[exfiltertype==1,m1,m2];
+rn = Abs[noisyMrImage-localMean];
+lrn = Log[Map[If[#==0,0.001,#]&,rn,{2}]];
+lpf2 = lpf[lrn,lpff];
+fc1 = correctRiceGauss[snr];
+lpf1 = lpf2-fc1;
+lpf1 = lpf[lpf1,lpffRice];
+mapa1 = Exp[lpf1];
+mapar = mapa1 * (2 / Sqrt[2] * Exp[-PolyGamma[1]/2]);
 
 
 EndPackage[]
