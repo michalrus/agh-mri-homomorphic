@@ -63,7 +63,7 @@ emmlRice[in_,n_,windowSize_]:=Module[{windowRadius,mask,ak,sigmak2},
 (* Gaussian matrix (Mathematica's GaussianMatrix[] seems to be incorrect? *)
 meshgrid[xgrid_List,ygrid_List] := Transpose[Outer[List,xgrid,ygrid],{3,2,1}]
 
-gaussianMatrix[w_,h_,sigma_]:=Module[{h1,h2,hg},
+gaussianMatrix[h_,w_,sigma_]:=Module[{h1,h2,hg},
   {h1,h2}=N[meshgrid[Range[-(w-1)/2,(w-1)/2,1],Range[-(h-1)/2,(h-1)/2,1]]];
   hg= Exp[-(h1^2+h2^2)/(2*sigma^2)];
   hg/Total[hg,2]
@@ -72,10 +72,10 @@ gaussianMatrix[w_,h_,sigma_]:=Module[{h1,h2,hg},
 
 (* LPF low pass filter of images *)
 lpf[i_,sigma_]:=Module[{Mx,My,h},
-  {Mx,My} = Dimensions[i];
-  h = GaussianMatrix[{{Mx,My},sigma*2}];
+  {My,Mx} = Dimensions[i];
+  h = gaussianMatrix[2*My,2*Mx,sigma*2];
   h = h/Max[h];
-  h = h[[Mx+1;;2*Mx,My+1;;2*My]];
+  h = h[[My+1;;-1,Mx+1;;-1]];
   FourierDCT[FourierDCT[i]*h,3]
 ]
 
@@ -88,7 +88,9 @@ m1 = filterPadded[BoxMatrix[exWindowRadius]/(exWindowRadius*2+1)^2,noisyMrImage]
 snr = If[StringLength[inputfilenamesnr]==0,m2/sigman,readInputFile[inputfilenamesnr]];
 rn = Abs[noisyMrImage-m1];
 lrn = Log[Map[If[#==0,0.001,#]&,rn,{2}]];
-lpf2 =lpf[lrn,lpff];
+lpf2 = lpf[lrn,lpff];
+mapa2 = Exp[lpf2];
+mapag = mapa2 * (2 / Sqrt[2] * Exp[-PolyGamma[1]/2]);
 
 
 EndPackage[]
