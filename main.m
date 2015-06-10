@@ -65,4 +65,14 @@ emmlRice[in_,n_,windowSize_]:=Module[{windowRadius,mask,ak,sigmak2},
 ]
 
 
+(* LPF low pass filter of images *)
+lpf[i_,sigma_]:=Module[{Mx,My,h},
+  {Mx,My} = Dimensions[i];
+  h = GaussianMatrix[{{Mx,My},sigma*2}];
+  h = h/Max[h];
+  h = h[[Mx+1;;2*Mx,My+1;;2*My]];
+  FourierDCT[FourierDCT[i]*h,3]
+]
+
+
 EndPackage[]
