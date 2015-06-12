@@ -10,10 +10,10 @@
 NotebookFileLineBreakTest
 NotebookFileLineBreakTest
 NotebookDataPosition[       158,          7]
-NotebookDataLength[      1490,         54]
-NotebookOptionsPosition[      1224,         40]
-NotebookOutlinePosition[      1559,         55]
-CellTagsIndexPosition[      1516,         52]
+NotebookDataLength[      1766,         60]
+NotebookOptionsPosition[      1499,         46]
+NotebookOutlinePosition[      1834,         61]
+CellTagsIndexPosition[      1791,         58]
 WindowFrame->Normal*)
 
 (* Beginning of Notebook Content *)
@@ -23,23 +23,29 @@ Cell[BoxData[{
   RowBox[{
   "SetDirectory", "[", "\"\</home/m/Development/agh/mri-homomorphic/\>\"", 
    "]"}], ";"}], "\[IndentingNewLine]", 
- RowBox[{"<<", "main.m"}]}], "Input",
+ RowBox[{
+  RowBox[{"<<", "main.m"}], " ", "//", " ", "AbsoluteTiming"}]}], "Input",
  CellChangeTimes->{{3.6428580635890007`*^9, 3.642858064963228*^9}, {
-  3.642858189651946*^9, 3.642858229470428*^9}}],
+  3.642858189651946*^9, 3.642858229470428*^9}, {3.64310420201213*^9, 
+  3.643104206800144*^9}}],
 
 Cell[BoxData[
  RowBox[{"{", 
   RowBox[{
+   RowBox[{"Image", "[", 
+    RowBox[{"MRI`noisyMrImage", "/", 
+     RowBox[{"Max", "[", "MRI`noisyMrImage", "]"}]}], "]"}], ",", 
    RowBox[{"Image", "[", 
     RowBox[{"MRI`mapag", "/", 
      RowBox[{"Max", "[", "MRI`mapag", "]"}]}], "]"}], ",", 
    RowBox[{"Image", "[", 
     RowBox[{"MRI`mapar", "/", 
      RowBox[{"Max", "[", "MRI`mapar", "]"}]}], "]"}]}], "}"}]], "Input",
- CellChangeTimes->{{3.642960434165563*^9, 3.642960435754788*^9}}]
+ CellChangeTimes->{{3.642960434165563*^9, 3.642960435754788*^9}, {
+  3.643102993723778*^9, 3.643103007587926*^9}}]
 },
-WindowSize->{678, 203},
-WindowMargins->{{Automatic, 203}, {Automatic, 40}},
+WindowSize->{694, 441},
+WindowMargins->{{Automatic, 106}, {Automatic, 87}},
 FrontEndVersion->"10.0 for Linux x86 (64-bit) (June 27, 2014)",
 StyleDefinitions->"Default.nb"
 ]
@@ -54,8 +60,8 @@ CellTagsIndex->{}
 *)
 (*NotebookFileOutline
 Notebook[{
-Cell[558, 20, 307, 7, 55, "Input"],
-Cell[868, 29, 352, 9, 55, "Input"]
+Cell[558, 20, 402, 9, 55, "Input"],
+Cell[963, 31, 532, 13, 77, "Input"]
 }
 ]
 *)
